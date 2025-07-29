@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supply Chain Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .tab-button {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .tab-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-button.active {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: #333;
+            font-weight: 700;
+        }
+
+        .add-button {
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .add-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        th {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .edit-btn,
+        .delete-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+
+        .delete-btn:hover {
+            background: #da190b;
+            transform: scale(1.05);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            min-width: 400px;
+            max-width: 90vw;
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .save-btn,
+        .cancel-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .cancel-btn {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .cancel-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+            display: block;
+        }
+
+        .stat-label {
+            color: #666;
+            font-weight: 500;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .tab-button {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            .modal-content {
+                min-width: 300px;
+                margin: 20px;
+            }
+
+            th,
+            td {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🏭 Supply Chain Management System</h1>
+
+        <div class="nav-tabs">
+            <button class="tab-button active" onclick="showTab('dashboard')">Dashboard</button>
+            <button class="tab-button" onclick="showTab('factory')">Factory</button>
+            <button class="tab-button" onclick="showTab('supplier')">Supplier</button>
+            <button class="tab-button" onclick="showTab('farmer')">Farmer</button>
+            <button class="tab-button" onclick="showTab('farm')">Farm</button>
+            <button class="tab-button" onclick="showTab('storage')">Storage</button>
+            <button class="tab-button" onclick="showTab('harvest')">Harvest Batch</button>
+            <button class="tab-button" onclick="showTab('sensor')">Sensor Data</button>
+            <button class="tab-button" onclick="showTab('material')">Pre-Harvest Material</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="section-header">
+                <h2 class="section-title">📊 Dashboard Overview</h2>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number" id="factoryCount">0</span>
+                    <div class="stat-label">Factories</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="supplierCount">0</span>
+                    <div class="stat-label">Suppliers</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="farmerCount">0</span>
+                    <div class="stat-label">Farmers</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="farmCount">0</span>
+                    <div class="stat-label">Farms</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="storageCount">0</span>
+                    <div class="stat-label">Storage Units</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="harvestCount">0</span>
+                    <div class="stat-label">Harvest Batches</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Factory Tab -->
+        <div id="factory" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">🏭 Factory Management</h2>
+                <button class="add-button" onclick="openModal('factoryModal')">Add Factory</button>
+            </div>
+
+            <div class="table-container">
+                <table id="factoryTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Contact</th>
+                            <th>Capacity</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="factoryTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Supplier Tab -->
+        <div id="supplier" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">🚚 Supplier Management</h2>
+                <button class="add-button" onclick="openModal('supplierModal')">Add Supplier</button>
+            </div>
+
+            <div class="table-container">
+                <table id="supplierTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Contact Person</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Address</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="supplierTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Farmer Tab -->
+        <div id="farmer" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">👨‍🌾 Farmer Management</h2>
+                <button class="add-button" onclick="openModal('farmerModal')">Add Farmer</button>
+            </div>
+
+            <div class="table-container">
+                <table id="farmerTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Address</th>
+                            <th>Experience (Years)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="farmerTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Farm Tab -->
+        <div id="farm" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">🚜 Farm Management</h2>
+                <button class="add-button" onclick="openModal('farmModal')">Add Farm</button>
+            </div>
+
+            <div class="table-container">
+                <table id="farmTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Farmer</th>
+                            <th>Location</th>
+                            <th>Size (Acres)</th>
+                            <th>Crop Type</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="farmTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Storage Tab -->
+        <div id="storage" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">🏪 Storage Management</h2>
+                <button class="add-button" onclick="openModal('storageModal')">Add Storage</button>
+            </div>
+
+            <div class="table-container">
+                <table id="storageTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Capacity (Tons)</th>
+                            <th>Temperature (°C)</th>
+                            <th>Humidity (%)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="storageTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Harvest Tab -->
+        <div id="harvest" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">🌾 Harvest Batch Management</h2>
+                <button class="add-button" onclick="openModal('harvestModal')">Add Harvest Batch</button>
+            </div>
+
+            <div class="table-container">
+                <table id="harvestTable">
+                    <thead>
+                        <tr>
+                            <th>Batch ID</th>
+                            <th>Farm</th>
+                            <th>Harvest Date</th>
+                            <th>Quantity (Kg)</th>
+                            <th>Quality Grade</th>
+                            <th>Storage</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="harvestTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Sensor Tab -->
+        <div id="sensor" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">📊 Sensor Data</h2>
+                <button class="add-button" onclick="openModal('sensorModal')">Add Sensor Reading</button>
+            </div>
+
+            <div class="table-container">
+                <table id="sensorTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Farm</th>
+                            <th>Sensor Type</th>
+                            <th>Value</th>
+                            <th>Unit</th>
+                            <th>Timestamp</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sensorTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Material Tab -->
+        <div id="material" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">🧪 Pre-Harvest Material</h2>
+                <button class="add-button" onclick="openModal('materialModal')">Add Material</button>
+            </div>
+
+            <div class="table-container">
+                <table id="materialTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Supplier</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th>Cost per Unit</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="materialTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Factory Modal -->
+    <div id="factoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Add/Edit Factory</div>
+            <form id="factoryForm">
+                <div class="form-group">
+                    <label>Factory Name</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" name="location" required>
+                </div>
+                <div class="form-group">
+                    <label>Contact</label>
+                    <input type="text" name="contact" required>
+                </div>
+                <div class="form-group">
+                    <label>Capacity</label>
+                    <input type="number" name="capacity" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="cancel-btn" onclick="closeModal('factoryModal')">Cancel</button>
+                    <button type="submit" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Supplier Modal -->
+    <div id="supplierModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Add/Edit Supplier</div>
+            <form id="supplierForm">
+                <div class="form-group">
+                    <label>Supplier Name</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Contact Person</label>
+                    <input type="text" name="contactPerson" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="tel" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <textarea name="address" required></textarea>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="cancel-btn" onclick="closeModal('supplierModal')">Cancel</button>
+                    <button type="submit" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Farmer Modal -->
+    <div id="farmerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Add/Edit Farmer</div>
+            <form id="farmerForm">
+                <div class="form-group">
+                    <label>Farmer Name</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="tel" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <textarea name="address" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Experience (Years)</label>
+                    <input type="number" name="experience" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="cancel-btn" onclick="closeModal('farmerModal')">Cancel</button>
+                    <button type="submit" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Farm Modal -->
+    <div id="farmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Add/Edit Farm</div>
+            <form id="farmForm">
+                <div class="form-group">
+                    <label>Farm Name</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Farmer</label>
+                    <select name="farmerId" id="farmerSelect" required>
+                        <option value="">Select Farmer</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" name="location" required>
+                </div>
+                <div class="form-group">
+                    <label>Size (Acres)</label>
+                    <input type="number" name="size" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label>Crop Type</label>
+                    <input type="text" name="cropType" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="cancel-btn" onclick="closeModal('farmModal')">Cancel</button>
+                    <button type="submit" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Storage Modal -->
+    <div id="storageModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Add/Edit Storage</div>
+            <form id="storageForm">
+                <div class="form-group">
+                    <label>Storage Name</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" name="location" required>
+                </div>
+                <div class="form-group">
+                    <label>Capacity (Tons)</label>
+                    <input type="number" name="capacity" required>
+                </div>
+                <div class="form-group">
+                    <label>Temperature (°C)</label>
+                    <input type="number" name="temperature" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label>Humidity (%)</label>
+                    <input type="number" name="humidity" min="0" max="100" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="cancel-btn" onclick="closeModal('storageModal')">Cancel</button>
+                    <button type="submit" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Harvest Modal -->
+    <div id="harvestModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Add/Edit Harvest Batch</div>
+            <form id="harvestForm">
+                <div class="form-group">
+                    <label>Farm</label>
+                    <select name="farmId" id="farmSelect" required>
+                        <option value="">Select Farm</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Harvest Date</label>
+                    <input type="date" name="harvestDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Quantity (Kg)</label>
+                    <input type="number" name="quantity" required>
+                </div>
+                <div class="form-group">
+                    <label>Quality Grade</label>
+                    <select name="qualityGrade" required>
+                        <option value="">Select Grade</option>
+                        <option value="A">Grade A</option>
+                        <option value="B">Grade B</option>
+                        <option value="C">Grade C</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Storage</label>
+                    <select name="storageId" id="storageSelect" required>
+                        <option value="">Select Storage</option>
+                    </select>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="cancel-btn" onclick="closeModal('harvestModal')">Cancel</button>
+                    <button type="submit" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sensor Modal -->
+    <div id="sensorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Add/Edit Sensor Data</div>
+            <form id="sensorForm">
+                <div class="form-group">
+                    <label>Farm</label>
+                    <select name="farmId" id="sensorFarmSelect" required>
+                        <option value="">Select Farm</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Sensor Type</label>
+                    <select name="sensorType" required>
+                        <option value="">Select Type</option>
+                        <option value="Temperature">Temperature</option>
+                        <option value="Humidity">Humidity</option>
+                        <option value="Soil Moisture">Soil Moisture</option>
+                        <option value="pH Level">pH Level</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Value</label>
+                    <input type="number" name="value" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Unit</label>
+                    <input type="text" name="unit" required>
+                </div>
+                <div class="form-group">
+                    <label>Timestamp</label>
+                    <input type="datetime-local" name="timestamp" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="cancel-btn" onclick="closeModal('sensorModal')">Cancel</button>
+                    <button type="submit" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Material Modal -->
+    <div id="materialModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Add/Edit Pre-Harvest Material</div>
+            <form id="materialForm">
+                <div class="form-group">
+                    <label>Material Name</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Type</label>
+                    <select name="type" required>
+                        <option value="">Select Type</option>
+                        <option value="Fertilizer">Fertilizer</option>
+                        <option value="Pesticide">Pesticide</option>
+                        <option value="Seeds">Seeds</option>
+                        <option value="Equipment">Equipment</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Supplier</label>
+                    <select name="supplierId" id="materialSupplierSelect" required>
+                        <option value="">Select Supplier</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Quantity</label>
+                    <input type="number" name="quantity" required>
+                </div>
+                <div class="form-group">
+                    <label>Unit</label>
+                    <input type="text" name="unit" required>
+                </div>
+                <div class="form-group">
+                    <label>Cost per Unit</label>
+                    <input type="number" name="costPerUnit" step="0.01" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="cancel-btn" onclick="closeModal('materialModal')">Cancel</button>
+                    <button type="submit" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Data storage
+        let data = {
+            factories: [],
+            suppliers: [],
+            farmers: [],
+            farms: [],
+            storage: [],
+            harvests: [],
+            sensors: [],
+            materials: []
+        };
+
+        let editingId = null;
+        let currentTable = null;
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize empty arrays
+            data = {
+                factories: [],
+                suppliers: [],
+                farmers: [],
+                farms: [],
+                storage: [],
+                harvests: [],
+                sensors: [],
+                materials: []
+            };
+            loadSampleData();
+            renderAllTables();
+            updateDashboard();
+        });
+
+        // Sample data
+        function loadSampleData() {
+            data.factories = [
+                { id: 1, name: "AgriTech Processing Plant", location: "California, USA", contact: "John Smith", capacity: 5000 },
+                { id: 2, name: "Green Valley Foods", location: "Texas, USA", contact: "Jane Doe", capacity: 3000 },
+                { id: 3, name: "Fresh Harvest Co.", location: "Florida, USA", contact: "Mike Johnson", capacity: 7500 }
+            ];
+
+            data.suppliers = [
+                { id: 1, name: "BioFert Solutions", contactPerson: "Sarah Wilson", phone: "+1-555-0101", email: "sarah@biofert.com", address: "123 Farm Supply St, Iowa" },
+                { id: 2, name: "AgriChem Corp", contactPerson: "Robert Brown", phone: "+1-555-0102", email: "robert@agrichem.com", address: "456 Chemical Ave, Nebraska" },
+                { id: 3, name: "Seed Masters LLC", contactPerson: "Emily Davis", phone: "+1-555-0103", email: "emily@seedmasters.com", address: "789 Seed Road, Kansas" }
+            ];
+
+            data.farmers = [
+                { id: 1, name: "Tom Anderson", phone: "+1-555-0201", email: "tom@farmmail.com", address: "Rural Route 1, Iowa", experience: 15 },
+                { id: 2, name: "Lisa Martinez", phone: "+1-555-0202", email: "lisa@cropland.com", address: "Country Road 45, Nebraska", experience: 8 },
+                { id: 3, name: "David Thompson", phone: "+1-555-0203", email: "david@greenfields.com", address: "Farm Lane 12, Kansas", experience: 22 }
+            ];
+
+            data.farms = [
+                { id: 1, name: "Sunrise Acres", farmerId: 1, location: "Iowa County, Iowa", size: 250, cropType: "Corn" },
+                { id: 2, name: "Golden Fields", farmerId: 2, location: "Platte County, Nebraska", size: 180, cropType: "Soybeans" },
+                { id: 3, name: "Prairie View Farm", farmerId: 3, location: "Riley County, Kansas", size: 320, cropType: "Wheat" }
+            ];
+
+            data.storage = [
+                { id: 1, name: "Central Grain Silo", location: "Des Moines, Iowa", capacity: 1000, temperature: 15.5, humidity: 45 },
+                { id: 2, name: "Midwest Storage Hub", location: "Omaha, Nebraska", capacity: 800, temperature: 12.0, humidity: 40 },
+                { id: 3, name: "Prairie Storage Facility", location: "Topeka, Kansas", capacity: 1200, temperature: 18.2, humidity: 50 }
+            ];
+
+            data.harvests = [
+                { id: 1, farmId: 1, harvestDate: "2024-09-15", quantity: 15000, qualityGrade: "A", storageId: 1 },
+                { id: 2, farmId: 2, harvestDate: "2024-10-02", quantity: 12000, qualityGrade: "B", storageId: 2 },
+                { id: 3, farmId: 3, harvestDate: "2024-08-28", quantity: 18500, qualityGrade: "A", storageId: 3 }
+            ];
+
+            data.sensors = [
+                { id: 1, farmId: 1, sensorType: "Temperature", value: 22.5, unit: "°C", timestamp: "2024-11-15T10:30:00" },
+                { id: 2, farmId: 1, sensorType: "Humidity", value: 65.2, unit: "%", timestamp: "2024-11-15T10:30:00" },
+                { id: 3, farmId: 2, sensorType: "Soil Moisture", value: 45.8, unit: "%", timestamp: "2024-11-15T09:15:00" },
+                { id: 4, farmId: 3, sensorType: "pH Level", value: 6.8, unit: "pH", timestamp: "2024-11-15T11:45:00" }
+            ];
+
+            data.materials = [
+                { id: 1, name: "NPK Fertilizer 20-10-10", type: "Fertilizer", supplierId: 1, quantity: 500, unit: "kg", costPerUnit: 2.50 },
+                { id: 2, name: "Organic Pesticide", type: "Pesticide", supplierId: 2, quantity: 200, unit: "liters", costPerUnit: 15.00 },
+                { id: 3, name: "Hybrid Corn Seeds", type: "Seeds", supplierId: 3, quantity: 100, unit: "kg", costPerUnit: 45.00 }
+            ];
+        }
+
+        // Tab management
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+
+            // Update dropdowns when switching tabs
+            updateDropdowns();
+        }
+
+        // Modal management
+        function openModal(modalId, itemId = null) {
+            editingId = itemId;
+            currentTable = modalId.replace('Modal', '');
+
+            const modal = document.getElementById(modalId);
+            modal.style.display = 'block';
+
+            if (itemId) {
+                populateForm(currentTable, itemId);
+            } else {
+                document.getElementById(currentTable + 'Form').reset();
+            }
+
+            updateDropdowns();
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            editingId = null;
+            currentTable = null;
+        }
+
+        // Form submission
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                handleFormSubmit(this);
+            });
+        });
+
+        function handleFormSubmit(form) {
+            const formData = new FormData(form);
+            const data_obj = {};
+
+            for (let [key, value] of formData.entries()) {
+                data_obj[key] = value;
+            }
+
+            const table = form.id.replace('Form', '');
+
+            // Ensure the array exists
+            if (!data[table + 's']) {
+                data[table + 's'] = [];
+            }
+
+            if (editingId) {
+                // Edit existing item
+                const index = data[table + 's'].findIndex(item => item.id == editingId);
+                if (index !== -1) {
+                    data[table + 's'][index] = { ...data[table + 's'][index], ...data_obj };
+                }
+            } else {
+                // Add new item
+                const items = data[table + 's'];
+                const newId = items.length > 0 ? Math.max(...items.map(item => item.id), 0) + 1 : 1;
+                data[table + 's'].push({ id: newId, ...data_obj });
+            }
+
+            renderTable(table);
+            updateDashboard();
+            closeModal(table + 'Modal');
+        }
+
+        // Populate form for editing
+        function populateForm(table, itemId) {
+            const item = data[table + 's'].find(item => item.id == itemId);
+            const form = document.getElementById(table + 'Form');
+
+            Object.keys(item).forEach(key => {
+                const input = form.querySelector(`[name="${key}"]`);
+                if (input) {
+                    input.value = item[key];
+                }
+            });
+        }
+
+        // Delete item
+        function deleteItem(table, itemId) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                const index = data[table + 's'].findIndex(item => item.id == itemId);
+                data[table + 's'].splice(index, 1);
+                renderTable(table);
+                updateDashboard();
+            }
+        }
+
+        // Render tables
+        function renderTable(table) {
+            const tableBody = document.getElementById(table + 'TableBody');
+            const items = data[table + 's'];
+
+            tableBody.innerHTML = '';
+
+            items.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = generateTableRow(table, item);
+                tableBody.appendChild(row);
+            });
+        }
+
+        function generateTableRow(table, item) {
+            switch (table) {
+                case 'factory':
+                    return `
+                        <td>${item.id}</td>
+                        <td>${item.name}</td>
+                        <td>${item.location}</td>
+                        <td>${item.contact}</td>
+                        <td>${item.capacity}</td>
+                        <td class="action-buttons">
+                            <button class="edit-btn" onclick="openModal('factoryModal', ${item.id})">Edit</button>
+                            <button class="delete-btn" onclick="deleteItem('factory', ${item.id})">Delete</button>
+                        </td>
+                    `;
+                case 'supplier':
+                    return `
+                        <td>${item.id}</td>
+                        <td>${item.name}</td>
+                        <td>${item.contactPerson}</td>
+                        <td>${item.phone}</td>
+                        <td>${item.email}</td>
+                        <td>${item.address}</td>
+                        <td class="action-buttons">
+                            <button class="edit-btn" onclick="openModal('supplierModal', ${item.id})">Edit</button>
+                            <button class="delete-btn" onclick="deleteItem('supplier', ${item.id})">Delete</button>
+                        </td>
+                    `;
+                case 'farmer':
+                    return `
+                        <td>${item.id}</td>
+                        <td>${item.name}</td>
+                        <td>${item.phone}</td>
+                        <td>${item.email}</td>
+                        <td>${item.address}</td>
+                        <td>${item.experience}</td>
+                        <td class="action-buttons">
+                            <button class="edit-btn" onclick="openModal('farmerModal', ${item.id})">Edit</button>
+                            <button class="delete-btn" onclick="deleteItem('farmer', ${item.id})">Delete</button>
+                        </td>
+                    `;
+                case 'farm':
+                    const farmer = data.farmers.find(f => f.id == item.farmerId);
+                    return `
+                        <td>${item.id}</td>
+                        <td>${item.name}</td>
+                        <td>${farmer ? farmer.name : 'Unknown'}</td>
+                        <td>${item.location}</td>
+                        <td>${item.size}</td>
+                        <td>${item.cropType}</td>
+                        <td class="action-buttons">
+                            <button class="edit-btn" onclick="openModal('farmModal', ${item.id})">Edit</button>
+                            <button class="delete-btn" onclick="deleteItem('farm', ${item.id})">Delete</button>
+                        </td>
+                    `;
+                case 'storage':
+                    return `
+                        <td>${item.id}</td>
+                        <td>${item.name}</td>
+                        <td>${item.location}</td>
+                        <td>${item.capacity}</td>
+                        <td>${item.temperature}</td>
+                        <td>${item.humidity}</td>
+                        <td class="action-buttons">
+                            <button class="edit-btn" onclick="openModal('storageModal', ${item.id})">Edit</button>
+                            <button class="delete-btn" onclick="deleteItem('storage', ${item.id})">Delete</button>
+                        </td>
+                    `;
+                case 'harvest':
+                    const farm = data.farms.find(f => f.id == item.farmId);
+                    const storage = data.storage.find(s => s.id == item.storageId);
+                    return `
+                        <td>${item.id}</td>
+                        <td>${farm ? farm.name : 'Unknown'}</td>
+                        <td>${item.harvestDate}</td>
+                        <td>${item.quantity}</td>
+                        <td>${item.qualityGrade}</td>
+                        <td>${storage ? storage.name : 'Unknown'}</td>
+                        <td class="action-buttons">
+                            <button class="edit-btn" onclick="openModal('harvestModal', ${item.id})">Edit</button>
+                            <button class="delete-btn" onclick="deleteItem('harvest', ${item.id})">Delete</button>
+                        </td>
+                    `;
+                case 'sensor':
+                    const sensorFarm = data.farms.find(f => f.id == item.farmId);
+                    return `
+                        <td>${item.id}</td>
+                        <td>${sensorFarm ? sensorFarm.name : 'Unknown'}</td>
+                        <td>${item.sensorType}</td>
+                        <td>${item.value}</td>
+                        <td>${item.unit}</td>
+                        <td>${new Date(item.timestamp).toLocaleString()}</td>
+                        <td class="action-buttons">
+                            <button class="edit-btn" onclick="openModal('sensorModal', ${item.id})">Edit</button>
+                            <button class="delete-btn" onclick="deleteItem('sensor', ${item.id})">Delete</button>
+                        </td>
+                    `;
+                case 'material':
+                    const supplier = data.suppliers.find(s => s.id == item.supplierId);
+                    return `
+                        <td>${item.id}</td>
+                        <td>${item.name}</td>
+                        <td>${item.type}</td>
+                        <td>${supplier ? supplier.name : 'Unknown'}</td>
+                        <td>${item.quantity}</td>
+                        <td>${item.unit}</td>
+                        <td>${item.costPerUnit}</td>
+                        <td class="action-buttons">
+                            <button class="edit-btn" onclick="openModal('materialModal', ${item.id})">Edit</button>
+                            <button class="delete-btn" onclick="deleteItem('material', ${item.id})">Delete</button>
+                        </td>
+                    `;
+            }
+        }
+
+        function renderAllTables() {
+            renderTable('factory');
+            renderTable('supplier');
+            renderTable('farmer');
+            renderTable('farm');
+            renderTable('storage');
+            renderTable('harvest');
+            renderTable('sensor');
+            renderTable('material');
+        }
+
+        // Update dashboard
+        function updateDashboard() {
+            document.getElementById('factoryCount').textContent = data.factories.length;
+            document.getElementById('supplierCount').textContent = data.suppliers.length;
+            document.getElementById('farmerCount').textContent = data.farmers.length;
+            document.getElementById('farmCount').textContent = data.farms.length;
+            document.getElementById('storageCount').textContent = data.storage.length;
+            document.getElementById('harvestCount').textContent = data.harvests.length;
+        }
+
+        // Update dropdowns
+        function updateDropdowns() {
+            // Update farmer dropdown
+            const farmerSelect = document.getElementById('farmerSelect');
+            if (farmerSelect) {
+                farmerSelect.innerHTML = '<option value="">Select Farmer</option>';
+                data.farmers.forEach(farmer => {
+                    farmerSelect.innerHTML += `<option value="${farmer.id}">${farmer.name}</option>`;
+                });
+            }
+
+            // Update farm dropdowns
+            ['farmSelect', 'sensorFarmSelect'].forEach(selectId => {
+                const farmSelect = document.getElementById(selectId);
+                if (farmSelect) {
+                    farmSelect.innerHTML = '<option value="">Select Farm</option>';
+                    data.farms.forEach(farm => {
+                        farmSelect.innerHTML += `<option value="${farm.id}">${farm.name}</option>`;
+                    });
+                }
+            });
+
+            // Update storage dropdown
+            const storageSelect = document.getElementById('storageSelect');
+            if (storageSelect) {
+                storageSelect.innerHTML = '<option value="">Select Storage</option>';
+                data.storage.forEach(storage => {
+                    storageSelect.innerHTML += `<option value="${storage.id}">${storage.name}</option>`;
+                });
+            }
+
+            // Update supplier dropdown
+            const supplierSelect = document.getElementById('materialSupplierSelect');
+            if (supplierSelect) {
+                supplierSelect.innerHTML = '<option value="">Select Supplier</option>';
+                data.suppliers.forEach(supplier => {
+                    supplierSelect.innerHTML += `<option value="${supplier.id}">${supplier.name}</option>`;
+                });
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function (event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+                editingId = null;
+                currentTable = null;
+            }
+        }
+    </script>
+</body>
+
+</html>
