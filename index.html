@@ -14,7 +14,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
             min-height: 100vh;
             color: #333;
         }
@@ -98,7 +98,7 @@
             align-items: center;
             margin-bottom: 20px;
             padding-bottom: 10px;
-            border-bottom: 2px solid #667eea;
+            border-bottom: 2px solid #27ae60;
         }
 
         .section-title {
@@ -109,7 +109,7 @@
 
         .add-button {
             padding: 10px 20px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
             color: white;
             border: none;
             border-radius: 20px;
@@ -145,7 +145,7 @@
         }
 
         th {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
             color: white;
             font-weight: 600;
             text-transform: uppercase;
@@ -252,8 +252,8 @@
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #27ae60;
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
         }
 
         .modal-buttons {
@@ -274,7 +274,7 @@
         }
 
         .save-btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
             color: white;
         }
 
@@ -315,7 +315,7 @@
         .stat-number {
             font-size: 2rem;
             font-weight: 700;
-            color: #667eea;
+            color: #27ae60;
             display: block;
         }
 
@@ -1103,7 +1103,9 @@
         // Render tables
         function renderTable(table) {
             const tableBody = document.getElementById(table + 'TableBody');
-            const items = data[table + 's'];
+            if (!tableBody) return; // Exit if table body doesn't exist
+            
+            const items = data[table + 's'] || []; // Use empty array if undefined
 
             tableBody.innerHTML = '';
 
@@ -1253,7 +1255,7 @@
         function updateDropdowns() {
             // Update farmer dropdown
             const farmerSelect = document.getElementById('farmerSelect');
-            if (farmerSelect) {
+           if (farmerSelect) {
                 farmerSelect.innerHTML = '<option value="">Select Farmer</option>';
                 data.farmers.forEach(farmer => {
                     farmerSelect.innerHTML += `<option value="${farmer.id}">${farmer.name}</option>`;
