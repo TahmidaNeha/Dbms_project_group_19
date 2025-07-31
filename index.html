@@ -361,13 +361,13 @@
         <div class="nav-tabs">
             <button class="tab-button active" onclick="showTab('dashboard')">Dashboard</button>
             <button class="tab-button" onclick="showTab('factory')">Factory</button>
+            <button class="tab-button" onclick="showTab('material')">Pre-Harvest Material</button>
             <button class="tab-button" onclick="showTab('supplier')">Supplier</button>
             <button class="tab-button" onclick="showTab('farmer')">Farmer</button>
             <button class="tab-button" onclick="showTab('farm')">Farm</button>
             <button class="tab-button" onclick="showTab('storage')">Storage</button>
             <button class="tab-button" onclick="showTab('harvest')">Harvest Batch</button>
             <button class="tab-button" onclick="showTab('sensor')">Sensor Data</button>
-            <button class="tab-button" onclick="showTab('material')">Pre-Harvest Material</button>
         </div>
 
         <!-- Dashboard Tab -->
@@ -424,6 +424,33 @@
                         </tr>
                     </thead>
                     <tbody id="factoryTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Material Tab -->
+        <div id="material" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">🧪 Pre-Harvest Material</h2>
+                <button class="add-button" onclick="openModal('materialModal')">Add Material</button>
+            </div>
+
+            <div class="table-container">
+                <table id="materialTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Supplier</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th>Cost per Unit</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="materialTableBody">
                     </tbody>
                 </table>
             </div>
@@ -585,32 +612,7 @@
             </div>
         </div>
 
-        <!-- Material Tab -->
-        <div id="material" class="tab-content">
-            <div class="section-header">
-                <h2 class="section-title">🧪 Pre-Harvest Material</h2>
-                <button class="add-button" onclick="openModal('materialModal')">Add Material</button>
-            </div>
 
-            <div class="table-container">
-                <table id="materialTable">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Supplier</th>
-                            <th>Quantity</th>
-                            <th>Unit</th>
-                            <th>Cost per Unit</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="materialTableBody">
-                    </tbody>
-                </table>
-            </div>
-        </div>
     </div>
 
     <!-- Modals -->
